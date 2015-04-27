@@ -1,4 +1,6 @@
 package com.mswordtoimage;
 
-public class InputType {
+public enum InputType {
+  URL,
+  File
 }
