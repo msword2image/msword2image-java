@@ -1,9 +1,13 @@
 package com.mswordtoimage;
 
 public class Output {
-  private OutputType type;
-  private OutputImageFormat imageFormat;
-  private String value;
+  private final OutputType type;
+  private final OutputImageFormat imageFormat;
+  private final String value;
+  
+  public Output(OutputType type, OutputImageFormat imageFormat) {
+      this(type, imageFormat, null);
+  }
   
   public Output(OutputType type, OutputImageFormat imageFormat, String value) {
     this.type = type;

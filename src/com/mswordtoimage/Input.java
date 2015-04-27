@@ -1,8 +1,8 @@
 package com.mswordtoimage;
 
 public class Input {
-  private InputType type;
-  private String value;
+  private final InputType type;
+  private final String value;
   
   public Input(InputType type, String value) {
     this.type = type;
