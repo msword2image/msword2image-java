@@ -1,6 +1,7 @@
 package com.mswordtoimage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -11,6 +12,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 public class MsWordToImageConvert {
 
@@ -100,7 +112,7 @@ public class MsWordToImageConvert {
         this.checkInputAndOutput();
         this.checkInputAndOutputTypes();
     }
-    
+
     private File getOutputFile() {
         return new File(this.output.getValue());
     }
@@ -136,16 +148,16 @@ public class MsWordToImageConvert {
     }
 
     private boolean convertFromURLToFile(File dest) throws UnsupportedEncodingException, IOException {
-        Map<String,String> parameters = new HashMap<>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("url", this.input.getValue());
-        
+
         FileUtils.copyURLToFile(new URL(this.constructMsWordToImageAddress(parameters)), dest);
         return true;
     }
 
     private String convertToBase46EncodedString() throws IOException {
         this.checkConversionSanity();
-        
+
         if (this.input.getType().equals(InputType.File)) {
             return this.convertFromFileToBase46EncodedString();
         } else if (this.input.getType().equals(InputType.URL)) {
@@ -154,7 +166,7 @@ public class MsWordToImageConvert {
             throw new IllegalArgumentException("MsWordToImageConvert: Conversion from " + this.input.getType().toString() + " is not supported");
         }
     }
-    
+
     private String convertFromURLToBase46EncodedString() throws IOException {
         File tempFile = File.createTempFile("mswtiConvert_", ".raw");
         tempFile.deleteOnExit();
@@ -163,11 +175,33 @@ public class MsWordToImageConvert {
         return Base64.getEncoder().encodeToString(outputByteArray);
     }
 
-    private boolean convertFromFileToFile() {
-        // TODO: implment actual conversion
-        return false;
+    private File getInputFile() {
+        return new File(this.input.getValue());
     }
-    
+
+    private boolean convertFromFileToFile() throws IOException {
+        if (!this.getInputFile().exists()) {
+            throw new IllegalArgumentException("MsWordToImageConvert: Input file was not found at '" + this.input.getValue() + "'");
+        }
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(this.constructMsWordToImageAddress(new HashMap<>()));
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        builder.addPart("file_contents", new FileBody(this.getInputFile()));
+        post.setEntity(builder.build());
+        
+        HttpResponse response = client.execute(post);
+
+        HttpEntity entity = response.getEntity();
+        FileOutputStream fileOS = new FileOutputStream(this.getOutputFile());
+        entity.writeTo(fileOS);
+        fileOS.flush();
+        fileOS.close();
+
+        return true;
+    }
+
     private String convertFromFileToBase46EncodedString() {
         // TODO: implment actual conversion
         return null;
