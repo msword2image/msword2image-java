@@ -37,7 +37,7 @@ String base64EncodedImage = convert.toBase46EncodedString();
 MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
 convert.fromFile("demo.doc");
 convert.toFile("output.jpeg");
-// Please make sure output file is writable and input file is readable by your PHP process.
+// Please make sure output file is writable and input file is readable by your Java process.
 ```
 
 ## Supported file formats
