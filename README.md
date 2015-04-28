@@ -23,6 +23,14 @@ convert.toFile("output.jpeg");
 // Please make sure output file is writable by your Java process.
 ```
 
+### 2. Convert from Word document URL to base 64 JPEG string
+
+```java
+MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
+convert.fromURL("http://msword2image.com/docs/demo.docx");
+String base64EncodedImage = convert.toBase46EncodedString();
+```
+
 ## Supported file formats
 
 <table>
