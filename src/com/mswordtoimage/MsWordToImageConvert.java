@@ -1,10 +1,15 @@
 package com.mswordtoimage;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.io.FileUtils;
 
 public class MsWordToImageConvert {
 
@@ -32,11 +37,11 @@ public class MsWordToImageConvert {
         this.input = new Input(InputType.URL, url);
     }
 
-    public boolean toFile(String filename) {
+    public boolean toFile(String filename) throws IOException {
         return this.toFile(filename, OutputImageFormat.PNG);
     }
 
-    public boolean toFile(String filename, OutputImageFormat imageFormat) {
+    public boolean toFile(String filename, OutputImageFormat imageFormat) throws IOException {
         this.output = new Output(OutputType.File, imageFormat, filename);
         return this.convertToFile();
     }
@@ -94,25 +99,61 @@ public class MsWordToImageConvert {
         this.checkInputAndOutput();
         this.checkInputAndOutputTypes();
     }
+    
+    private File getOutputFile() {
+        return new File(this.output.getValue());
+    }
 
     private void checkCanWriteOutputFile() {
-        File outputFile = new File(this.output.getValue());
+        File outputFile = this.getOutputFile();
         if (!outputFile.canWrite()) {
             throw new IllegalArgumentException("MsWordToImageConvert: Can't write to output file at " + this.output.getValue());
         }
     }
 
-    private boolean convertToFile() {
+    private String constructMsWordToImageAddress(Map<String, String> additionalParameters) throws UnsupportedEncodingException {
+        String returnValue = "http://msword2image.com/convert?"
+                + "apiUser=" + URLEncoder.encode(this.apiUser, "UTF-8") + "&"
+                + "apiKey=" + URLEncoder.encode(this.apiKey, "UTF-8") + "&"
+                + "format=" + URLEncoder.encode(this.output.getImageFormat().name(), "UTF-8");
+
+        for (String key : additionalParameters.keySet()) {
+            String value = additionalParameters.get(key);
+            returnValue += "&" + key + "=" + URLEncoder.encode(value, "UTF-8");
+        }
+
+        return returnValue;
+    }
+
+    private boolean convertToFile() throws IOException {
         this.checkConversionSanity();
         this.checkCanWriteOutputFile();
+
+        if (this.input.getType().equals(InputType.File)) {
+            return this.convertFromFileToFile();
+        } else if (this.input.getType().equals(InputType.URL)) {
+            return this.convertFromURLToFile();
+        }
+
+        return false;
+    }
+
+    private boolean convertFromURLToFile() throws UnsupportedEncodingException, IOException {
+        Map<String,String> parameters = new HashMap<>();
+        parameters.put("url", this.input.getValue());
         
+        FileUtils.copyURLToFile(new URL(this.constructMsWordToImageAddress(parameters)), this.getOutputFile());
+        return true;
+    }
+
+    private boolean convertFromFileToFile() {
         // TODO: implment actual conversion
         return false;
     }
 
     private String convertToBase46EncodedString() {
         this.checkConversionSanity();
-        
+
         // TODO: implment actual conversion
         return null;
     }
