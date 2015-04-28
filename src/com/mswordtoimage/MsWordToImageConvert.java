@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 public class MsWordToImageConvert {
@@ -160,10 +159,8 @@ public class MsWordToImageConvert {
         File tempFile = File.createTempFile("mswtiConvert_", ".raw");
         tempFile.deleteOnExit();
         this.convertFromURLToFile(tempFile);
-        String output = FileUtils.readFileToString(tempFile);
-        byte[] encodedByteArray = Base64.encodeBase64(output.getBytes());
-        output = new String(encodedByteArray);
-        return output;
+        byte[] outputByteArray = FileUtils.readFileToByteArray(tempFile);
+        return Base64.getEncoder().encodeToString(outputByteArray);
     }
 
     private boolean convertFromFileToFile() {
