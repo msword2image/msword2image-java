@@ -31,6 +31,15 @@ convert.fromURL("http://msword2image.com/docs/demo.docx");
 String base64EncodedImage = convert.toBase46EncodedString();
 ```
 
+### 3. Convert from Word file to JPEG file
+
+```java
+MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
+convert.fromFile("demo.doc");
+convert.toFile("output.jpeg");
+// Please make sure output file is writable and input file is readable by your PHP process.
+```
+
 ## Supported file formats
 
 <table>
