@@ -10,6 +10,8 @@ Note that you can try this out by visting [msword2image.com](http://msword2image
 
 ## Installation
 
+You can simply download [MsWordToImageConvert.jar](https://github.com/msword2image/msword2image-java/raw/master/pack/MsWordToImageConvert.jar) which includes all dependencies.
+
 ## Usage
 
 ## Supported file formats
