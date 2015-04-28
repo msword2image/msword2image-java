@@ -14,6 +14,15 @@ You can simply download [MsWordToImageConvert.jar](https://github.com/msword2ima
 
 ## Usage
 
+### 1. Convert from Word document URL to PNG file
+
+```java
+MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
+convert.fromURL("http://msword2image.com/docs/demo.docx");
+convert.toFile("output.png");
+// Please make sure output file is writable by your Java process.
+```
+
 ## Supported file formats
 
 <table>
