@@ -104,13 +104,6 @@ public class MsWordToImageConvert {
         return new File(this.output.getValue());
     }
 
-    private void checkCanWriteOutputFile() {
-        File outputFile = this.getOutputFile();
-        if (!outputFile.canWrite()) {
-            throw new IllegalArgumentException("MsWordToImageConvert: Can't write to output file at " + this.output.getValue());
-        }
-    }
-
     private String constructMsWordToImageAddress(Map<String, String> additionalParameters) throws UnsupportedEncodingException {
         String returnValue = "http://msword2image.com/convert?"
                 + "apiUser=" + URLEncoder.encode(this.apiUser, "UTF-8") + "&"
@@ -127,7 +120,6 @@ public class MsWordToImageConvert {
 
     private boolean convertToFile() throws IOException {
         this.checkConversionSanity();
-        this.checkCanWriteOutputFile();
 
         if (this.input.getType().equals(InputType.File)) {
             return this.convertFromFileToFile();
