@@ -40,6 +40,32 @@ convert.toFile("output.jpeg");
 // Please make sure output file is writable and input file is readable by your Java process.
 ```
 
+### 4. Convert from Word file to base 64 encoded JPEG string
+
+```java
+MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
+convert.fromFile("demo.doc");
+String encodedString = convert.toBase46EncodedString();
+// Please make sure input file is readable by your Java process.
+```
+### 5. Convert from Word file to base 64 encoded GIF string
+
+```java
+MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
+convert.fromFile("demo.doc");
+String encodedString = convert.toBase46EncodedString(OutputImageFormat.GIF);
+// Please make sure input file is readable by your Java process.
+```
+
+### 6. Convert from Word file to base 64 encoded PNG string
+
+```java
+MsWordToImageConvert convert = new MsWordToImageConvert(apiUser, apiKey);
+convert.fromFile("demo.doc");
+String encodedString = convert.toBase46EncodedString(OutputImageFormat.PNG);
+// Please make sure input file is readable by your Java process.
+```
+
 ## Supported file formats
 
 <table>
